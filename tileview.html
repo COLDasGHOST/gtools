@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Growtopia Tools | RT File Converter</title>
+
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
+  <!-- iCheck for checkboxes and radio inputs -->
+  <link rel="stylesheet" href="plugins/bootstrap-toggle/bootstrap-toggle.min.css">
+  <!-- DataTables -->
+  <link rel="stylesheet" href="plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+  <link rel="stylesheet" href="plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+  <link rel="stylesheet" href="plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="dist/css/adminlte.min.css">
+  <!-- CodeMirror -->
+  <link rel="stylesheet" href="plugins/codemirror/codemirror.css">
+  <link rel="stylesheet" href="plugins/codemirror/theme/monokai.css">
+  <!-- My Custom CSS -->
+  <link rel="stylesheet" href="dist/css/mycss.css">
+  <!-- SweetAlert2 -->
+  <link rel="stylesheet" href="plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
+  <!-- CodeMirror -->
+  <link rel="stylesheet" href="plugins/codemirror/codemirror.css">
+  <link rel="stylesheet" href="plugins/codemirror/theme/monokai.css">
+</head>
+<body class="dark-mode hold-transition sidebar-mini layout-fixed layout-footer-fixed sidebar-collapse">
+<div class="wrapper">
+
+  <!-- Navbar -->
+  <nav class="main-header navbar navbar-expand">
+    <!-- Left navbar links -->
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars text-white"></i></a>
+      </li>
+    </ul>
+  </nav>
+  <!-- /.navbar -->
+
+  <!-- Main Sidebar Container -->
+  <aside class="main-sidebar sidebar-dark-primary elevation-4">
+    <!-- Brand Logo -->
+    <a href="#" class="brand-link">
+      <img src="dist/img/growtopia.jpg" alt="Growtopia Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+      <span class="brand-text font-weight-light">Growtopia Tools</span>
+    </a>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="mb-2"></div>
+
+      <!-- SidebarSearch Form -->
+      <div class="form-inline">
+        <div class="input-group" data-widget="sidebar-search">
+          <input class="form-control form-control-sidebar" type="search" placeholder="Search" aria-label="Search">
+          <div class="input-group-append">
+            <button class="btn btn-sidebar">
+              <i class="fas fa-search fa-fw"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      
+            <!-- Sidebar Menu -->
+            <nav class="mt-2">
+              <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                <li class="nav-item">
+                  <a href="index.html" class="nav-link">
+                    <i class="nav-icon fas fa-th"></i>
+                    <p>
+                      Items.dat Tools
+                    </p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="rtconverter.html" class="nav-link">
+                    <i class="nav-icon fas fa-th"></i>
+                    <p>
+                      RT File Converter
+                    </p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="protonhash.html" class="nav-link">
+                    <i class="nav-icon fas fa-th"></i>
+                    <p>
+                      Proton Hash
+                    </p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="#" class="nav-link active">
+                    <i class="nav-icon fas fa-th"></i>
+                    <p>Tile Viewer</p>
+                  </a>
+                </li>
+              </ul>
+            </nav>
+            <!-- /.sidebar-menu -->
+          </div>
+          <!-- /.sidebar -->
+        </aside>
+      
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+          <!-- Content Header (Page header) -->
+          <div class="content-header">
+            <div class="container-fluid">
+              <div class="row mb-2">
+                <div class="col-sm-6">
+                  <h1 class="m-0">Tile Viewer</h1>
+                </div><!-- /.col -->
+              </div><!-- /.row -->
+            </div><!-- /.container-fluid -->
+          </div>
+          <!-- /.content-header -->
+      
+          <!-- Main content -->
+          <div class="content">
+            <div class="container-fluid">
+              <div class="row">
+                <div class="col-md-12">
+                  <!-- jquery validation -->
+                  <div class="card card-primary card-outline card-outline-tabs">
+                    <div class="card-header p-0 border-bottom-0">
+                    </div>
+                    <div class="card-body">
+                      <div class="tab-content" id="rt-tabContents">
+                        <div>
+                          <input type="file" accept="image/*" onchange="previewImage(event)">
+                          <div>
+                              <label for="tileSizeWidth">Tile Size Width (pixels):</label>
+                              <input type="number" id="tileSizeWidth" value="32" min="1" onchange="setTileSize()">
+                          </div>
+                          <div>
+                              <label for="tileSizeHeight">Tile Size Height (pixels):</label>
+                              <input type="number" id="tileSizeHeight" value="32" min="1" onchange="setTileSize()">
+                          </div>
+                          <br>
+                          <canvas id="canvas"></canvas>
+                          <p>Tile koordinat: <span id="tile-coordinate"></span></p>
+                          <script>
+                              var canvas, context, img;
+                      
+                              function previewImage(event) {
+                                  var reader = new FileReader();
+                                  reader.onload = function() {
+                                      canvas = document.getElementById('canvas');
+                                      context = canvas.getContext('2d');
+                                      var tileSizeWidthInput = document.getElementById('tileSizeWidth');
+                                      var tileSizeHeightInput = document.getElementById('tileSizeHeight');
+                                      var tileSizeWidth = parseInt(tileSizeWidthInput.value);
+                                      var tileSizeHeight = parseInt(tileSizeHeightInput.value);
+                                      img = new Image();
+                                      img.onload = function() {
+                                          canvas.width = img.width;
+                                          canvas.height = img.height;
+                                          context.drawImage(img, 0, 0);
+                                          setTileSize();
+                                      }
+                                      img.src = reader.result;
+                                  }
+                                  reader.readAsDataURL(event.target.files[0]);
+                              }
+                      
+                              function setTileSize() {
+                                  var tileSizeWidthInput = document.getElementById('tileSizeWidth');
+                                  var tileSizeHeightInput = document.getElementById('tileSizeHeight');
+                                  var tileSizeWidth = parseInt(tileSizeWidthInput.value);
+                                  var tileSizeHeight = parseInt(tileSizeHeightInput.value);
+                                  if (!isNaN(tileSizeWidth) && tileSizeWidth > 0 && !isNaN(tileSizeHeight) && tileSizeHeight > 0) {
+                                      drawGrid(context, canvas.width, canvas.height, tileSizeWidth, tileSizeHeight);
+                                      drawCoordinates(context, canvas.width, canvas.height, tileSizeWidth, tileSizeHeight);
+                                      addTileClickEventListener(canvas, tileSizeWidth, tileSizeHeight);
+                                  }
+                              }
+                      
+                              function drawGrid(context, width, height, gridSizeWidth, gridSizeHeight) {
+                                  context.clearRect(0, 0, width, height);
+                                  context.drawImage(img, 0, 0);
+                                  context.strokeStyle = 'rgba(0, 0, 0, 0.5)';
+                                  for (var x = 0; x <= width; x += gridSizeWidth) {
+                                      context.beginPath();
+                                      context.moveTo(x, 0);
+                                      context.lineTo(x, height);
+                                      context.stroke();
+                                  }
+                                  for (var y = 0; y <= height; y += gridSizeHeight) {
+                                      context.beginPath();
+                                      context.moveTo(0, y);
+                                      context.lineTo(width, y);
+                                      context.stroke();
+                                  }
+                              }
+                      
+                              function drawCoordinates(context, width, height, gridSizeWidth, gridSizeHeight) {
+                                  context.font = '11px Arial';
+                                  var xCoord = 0;
+                                  var yCoord = 0;
+                                  for (var x = 0; x <= width; x += gridSizeWidth) {
+                                      for (var y = 0; y <= height; y += gridSizeHeight) {
+                                          var r = Math.floor(Math.random() * 256);
+                                          var g = Math.floor(Math.random() * 256);
+                                          var b = Math.floor(Math.random() * 256);
+                                          context.fillStyle = `rgb(${r}, ${g}, ${b})`;
+                                          context.fillText('(' + xCoord + ',' + yCoord + ')', x + 0, y + 15);
+                                          yCoord++;
+                                      }
+                                      xCoord++;
+                                      yCoord = 0;
+                                  }
+                              }
+                      
+                              function addTileClickEventListener(canvas, tileSizeWidth, tileSizeHeight) {
+                                  canvas.addEventListener('click', function(event) {
+                                      var rect = this.getBoundingClientRect();
+                                      var x = Math.floor((event.clientX - rect.left) / tileSizeWidth);
+                                      var y = Math.floor((event.clientY - rect.top) / tileSizeHeight);
+                                      showTileCoordinate(x, y);
+                                  });
+                              }
+                      
+                              function showTileCoordinate(x, y) {
+                                  var coordinateElement = document.getElementById('tile-coordinate');
+                                  coordinateElement.textContent = 'Tile koordinat: (' + x + ', ' + y + ')';
+                              }
+                          </script></div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- /.card -->
+                </div>
+              </div>
+              <!-- /.row -->
+            </div><!-- /.container-fluid -->
+          </div>
+        </div>
+        <!-- /.content-wrapper -->
+      
+        <!-- Main Footer -->
+        <footer class="main-footer">
+          <!-- To the right -->
+          <div class="float-right d-none d-sm-inline">
+            <b>Growtopia Tools</b>, <strong><a href="https://github.com/GuckTubeYT/GrowTools">GuckTube YT</a></strong>.
+          </div>
+          <!-- Default to the left -->
+          <strong>Copyright &copy; 2014-2021 <a href="https://adminlte.io">AdminLTE.io</a>.</strong> All rights reserved.
+        </footer>
+      </div>
+</body>
+</html>
